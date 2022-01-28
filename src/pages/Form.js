@@ -4,12 +4,12 @@ import { TextInput, Title, Button } from "react-native-paper";
 import { Dropdown } from 'react-native-material-dropdown-v2-fixed';
 import api from "../services/Api";
 import isEqual from "lodash/isEqual";
-import {
-    getProductById,
-    insertProduct,
-    getSections,
-    updateProduct
-} from  '../database/Database'
+// import {
+//     getProductById,
+//     insertProduct,
+//     getSections,
+//     updateProduct
+// } from  '../database/Database'
 
 const  activeColor = '#6100ed';
 
@@ -27,102 +27,99 @@ const Form = ({isCreate = true, id = "0"}) => {
             await getQuadro();
         }
 
-        getSections(onChangeSectionList);
-        // const response = await api.get('/select/selectsections');
-        // onChangeSectionList(response.data.data)
+        // local
+        // getSections(onChangeSectionList);
+
+        // api rest
+        const response = await api.get('/select/selectsections');
+        onChangeSectionList(response.data.data)
     }, []);
 
     const getQuadro = async () => {
-        // const response = await api.get(
-        //     '/products/getbyid',
-        //     {
-        //         headers: {
-        //             'id': id
-        //         }
-        //     }
-        // );
+        // API REST
+        const response = await api.get(
+            '/products/getbyid',
+            {
+                headers: {
+                    'id': id
+                }
+            }
+        );
 
-        // const {
-        //     name,
-        //     description,
-        //     price,
-        //     photoUrl,
-        //     sectionId,
-        // } = response.data.data
-        //
-        //
-        // if(response.data.status) {
-        //     onChangeName(name);
-        //     onChangeDescription(description);
-        //     onChangePrice(price.toString());
-        //     onChangePhotoUrl(photoUrl);
-        //     onChangeSectionId(sectionId);
-        // }
+        const {
+            name,
+            description,
+            price,
+            photoUrl,
+            sectionId,
+        } = response.data.data
 
-        getProductById((data) => {
-            const {
-                name,
-                description,
-                price,
-                photoUrl,
-                sectionId,
-            } = data
 
+        if(response.data.status) {
             onChangeName(name);
             onChangeDescription(description);
             onChangePrice(price.toString());
             onChangePhotoUrl(photoUrl);
             onChangeSectionId(sectionId);
-        }, id);
+        }
+
+        // LOCAL
+        // getProductById((data) => {
+        //     const {
+        //         name,
+        //         description,
+        //         price,
+        //         photoUrl,
+        //         sectionId,
+        //     } = data
+        //
+        //     onChangeName(name);
+        //     onChangeDescription(description);
+        //     onChangePrice(price.toString());
+        //     onChangePhotoUrl(photoUrl);
+        //     onChangeSectionId(sectionId);
+        // }, id);
 
     }
 
     const save = async () => {
-        onChangeIsLoading(true);
-        await insertProduct({
-            name: name,
-            description: description,
-            price: parseFloat(price),
-            sectionId: sectionId,
-            photoUrl: photoUrl
-        });
-
-        onChangeIsLoading(false);
-        onChangeName("");
-        onChangeDescription("");
-        onChangePrice("");
-        onChangePhotoUrl("");
-
-        // const response = await api.post('/products/insert', {
+        // LOCAL
+        // onChangeIsLoading(true);
+        // await insertProduct({
         //     name: name,
         //     description: description,
         //     price: parseFloat(price),
         //     sectionId: sectionId,
         //     photoUrl: photoUrl
         // });
+        //
         // onChangeIsLoading(false);
-        // if(response.data.status) {
-        //     onChangeName("");
-        //     onChangeDescription("");
-        //     onChangePrice("");
-        //     onChangePhotoUrl("");
-        // }
-    }
+        // onChangeName("");
+        // onChangeDescription("");
+        // onChangePrice("");
+        // onChangePhotoUrl("");
 
-    const edit = async () => {
-        onChangeIsLoading(true);
-        updateProduct({
-            id: parseInt(id),
+        // API REST
+        const response = await api.post('/products/insert', {
             name: name,
             description: description,
             price: parseFloat(price),
-            sectionId: 1,
+            sectionId: sectionId,
             photoUrl: photoUrl
         });
         onChangeIsLoading(false);
-        
+        if(response.data.status) {
+            onChangeName("");
+            onChangeDescription("");
+            onChangePrice("");
+            onChangePhotoUrl("");
+        }
+    }
+
+    const edit = async () => {
+        // LOCAL
         // onChangeIsLoading(true);
-        // const response = await api.put('/products/update', {
+        // updateProduct({
         //     id: parseInt(id),
         //     name: name,
         //     description: description,
@@ -131,6 +128,18 @@ const Form = ({isCreate = true, id = "0"}) => {
         //     photoUrl: photoUrl
         // });
         // onChangeIsLoading(false);
+
+        // API REST
+        onChangeIsLoading(true);
+        const response = await api.put('/products/update', {
+            id: parseInt(id),
+            name: name,
+            description: description,
+            price: parseFloat(price),
+            sectionId: 1,
+            photoUrl: photoUrl
+        });
+        onChangeIsLoading(false);
     }
 
     const {

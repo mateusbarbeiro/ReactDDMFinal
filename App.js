@@ -4,14 +4,14 @@ import { BottomNavigation, ActivityIndicator } from 'react-native-paper';
 import List from "./src/pages/List";
 import Form from './src/pages/Form';
 import api from "./src/services/Api" ;
-import {
-  // dropTable,
-  initDB,
-  getProducts
-} from './src/database/Database'
+// import {
+//   // dropTable,
+//   initDB,
+//   getProducts
+// } from './src/database/Database'
 
 // dropTable();
-initDB();
+// initDB();
 
 export default function App() {
   const [index, setIndex] = React.useState(0);
@@ -25,22 +25,24 @@ export default function App() {
 
   useEffect(() => {
     onChangeId('0')
-    // Promise.all([
-    //       api.get('/products/getall')
-    //     ]).then(
-    //     (response)=> {
-    //       onChangeQuadros(response[0].data.data)
-    //       onChangeIsLoading(false)
-    //     }
-    // )
-
+    // API REST
     Promise.all([
-      getProducts(onChangeQuadros)
-    ]).then(
+          api.get('/products/getall')
+        ]).then(
         (response)=> {
+          onChangeQuadros(response[0].data.data)
           onChangeIsLoading(false)
         }
     )
+
+    // LOCAL
+    // Promise.all([
+    //   getProducts(onChangeQuadros)
+    // ]).then(
+    //     (response)=> {
+    //       onChangeIsLoading(false)
+    //     }
+    // )
   },[ isLoading ])
 
   // criar uma função para alterar index do bottom navigation bar e passar por parametro para List -> quadro e deve ser chamada no onpressed

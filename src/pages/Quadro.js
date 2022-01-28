@@ -1,6 +1,5 @@
 import
     React, {
-    Component, useEffect
 } from "react";
 import {
     View,
@@ -12,7 +11,7 @@ import {
 } from 'react-native';
 import isNull from "lodash/isNull";
 import api from "../services/Api";
-import { deleteProductById } from "../database/Database"
+// import { deleteProductById } from "../database/Database"
 
 
 const Quadro = ({data, reload, onEdit}) => {
@@ -24,25 +23,28 @@ const Quadro = ({data, reload, onEdit}) => {
     } = data
 
     const deleteById = () => {
-        deleteProductById(id).then(
-            () => {
-                reload()
-            }
-        );
-        // Promise.all(
-        //     [
-        //         api.delete(
-        //             '/products/delete',
-        //             {
-        //                 headers: {'id': id}
-        //             }
-        //         )
-        //     ]
-        // ).then(
-        //     (response)=> {
+        // LOCAL
+        // deleteProductById(id).then(
+        //     () => {
         //         reload()
         //     }
-        // )
+        // );
+
+        // API REST
+        Promise.all(
+            [
+                api.delete(
+                    '/products/delete',
+                    {
+                        headers: {'id': id}
+                    }
+                )
+            ]
+        ).then(
+            (response)=> {
+                reload()
+            }
+        )
     }
 
     const showConfirmDialog = () => {
